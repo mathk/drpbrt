@@ -17,22 +17,20 @@
   (define j (vector 0 1 0))
   (define k (vector 0 0 1))
   (test-case "Vector add"
-             (define sum (vector-add a b))
-             (check-eq? (vector-x sum) 5)
-             (check-eq? (vector-y sum) 7)
-             (check-eq? (vector-z sum) 9))
+             (check-equal? (vector-add a b) (vector 5 7 9)))
   (test-case "Vector sub"
-             (define sub (vector-sub a b))
-             (check-eq? (vector-x sub) -3)
-             (check-eq? (vector-y sub) -3)
-             (check-eq? (vector-z sub) -3))
+             (check-equal? (vector-sub a b) (vector -3 -3 -3)))
+  (test-case "Vector time"
+             (check-equal? (vector-time a 2) (vector 2 4 6)))
+  (test-case "Vector divide"
+             (check-equal? (vector-divide b 2) (vector 2 (/ 5 2) 3)))
   (test-case "Vector dot"
-             (define dot (vector-dot a b))
-             (check-eq? dot 32))
+             (check-eq? (vector-dot a b) 32))
   (test-case "Vector magnitude"
-             (define mag (vector-magnitude c))
-             (check-epsilon-eq? mag (sqrt 12)))
+             (check-epsilon-eq? (vector-magnitude c) (sqrt 12)))
   (test-case "Vector cross"
              (check-equal? (vector-cross i j) k)
-             (check-equal? (vector-cross j k) i))
+             (check-equal? (vector-cross j k) i)
+             (check-equal? (vector-cross k i) j)
+             (check-not-equal? (vector-cross i k) j))
   )

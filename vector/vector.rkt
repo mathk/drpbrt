@@ -13,6 +13,10 @@
  vector-magnitude
  ;; Compute cross product of two vector
  vector-cross
+ ;; Compute product of vector to a number
+ vector-time
+ ;; Compute division of vector to a number
+ vector-divide
  )
 
 (struct vector (x y z)
@@ -47,8 +51,11 @@
    (mapfunc (vector-z v1) (vector-z v2))))
 
 (define (vector-add v1 v2) (vector-map-fold v1 v2 + vector))
-
 (define (vector-sub v1 v2) (vector-map-fold v1 v2 - vector))
+(define (vector-time v1 s) (vector-map-fold v1 (vector s s s) * vector))
+(define (vector-divide v1 s)
+  (let [(invs (/ 1 s))]
+    (vector-map-fold v1 (vector invs invs invs) * vector)))
 
 (define (vector-dot v1 v2) (vector-map-fold v1 v2 * +))
 
