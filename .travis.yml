@@ -59,7 +59,7 @@ before_script:
 # packages without it getting stuck on a confirmation prompt.
 script:
  - cd ..   # Travis did a cd into the dir. Back up, for the next:
- - /usr/racket/bin/raco pkg install --deps search-auto --link <<name>>
- - /usr/racket/bin/raco test -x -p pbrt-racket
+ - /home/travis/racket/bin/raco pkg install --deps search-auto --link <<name>>
+ - /home/travis/racket/bin/raco test -x -p pbrt-racket
 
 after_script:
