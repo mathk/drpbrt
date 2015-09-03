@@ -7,3 +7,4 @@
 (define pkg-desc "Attempt to write pbrt using racket")
 (define version "0.0")
 (define pkg-authors '(msuen))
+(define test-omit-paths '("scribblings"))

@@ -7,8 +7,11 @@
  vector-add
  ;; Substracting 2 vectors
  vector-sub
- ;; Computing the dot product of 2 vectors
- vector-dot)
+ ;; Compute the dot product of 2 vectors
+ vector-dot
+ ;; Compute the magnitude of a vector
+ vector-magnitude
+ )
 
 (struct vector (x y z)
   #:methods gen:custom-write

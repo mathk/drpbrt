@@ -2,8 +2,13 @@
 
 (module+ test
   (require rackunit
+           math/flonum
            "vector.rkt"
-           (submod "vector.rkt" private-test))
+           (submod "vector.rkt" private-test)
+   )
+
+  (define-simple-check (check-epsilon-eq? a b)
+    (and (< (- a (flulp a)) b) (> (+ a (flulp a)) b)))
 
   (define a (vector 1 2 3))
   (define b (vector 4 5 6))
@@ -23,5 +28,5 @@
              (check-eq? dot 32))
   (test-case "Vector magnitude"
              (define mag (vector-magnitude c))
-             (check-eq? mag (sqrt 12)))
+             (check-epsilon-eq? mag (sqrt 12)))
   )

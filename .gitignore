@@ -3,3 +3,5 @@
 .\#*
 .DS_Store
 compiled
+*.bak
+*.sw[ponm]
