@@ -11,6 +11,8 @@
  vector-dot
  ;; Compute the magnitude of a vector
  vector-magnitude
+ ;; Compute cross product of two vector
+ vector-cross
  )
 
 (struct vector (x y z)
@@ -23,7 +25,20 @@
        (print (vector-y vector) port)
        (write-string ", " port)
        (print (vector-z vector) port)
-       (write-string ">" port)))])
+       (write-string ">" port)))]
+  #:methods gen:equal+hash
+  [(define (equal-proc a b equal?-recur)
+     (and (equal?-recur (vector-x a) (vector-x b))
+          (equal?-recur (vector-y a) (vector-y b))
+          (equal?-recur (vector-z a) (vector-z b))))
+   (define (hash-proc a hash-recur)
+     (+ (hash-recur (vector-x a))
+        (* 3 (hash-recur (vector-y a)))
+        (* 5 (hash-recur (vector-z a)))))
+   (define (hash2-proc a hash-recur)
+     (- (* 3 (hash-recur (vector-x a)))
+        (hash-recur (vector-y a))
+        (hash-recur (vector-z a))))])
 
 (define (vector-map-fold v1 v2 mapfunc foldfunc)
   (foldfunc
@@ -37,7 +52,16 @@
 
 (define (vector-dot v1 v2) (vector-map-fold v1 v2 * +))
 
-(define (vector-magnitude v) (sqrt (vector-dot v v))) 
+(define (vector-magnitude v) (sqrt (vector-dot v v)))
+
+(define (vector-cross v1 v2)
+  (vector
+   (- (* (vector-y v1) (vector-z v2))
+      (* (vector-z v1) (vector-y v2)))
+   (- (* (vector-z v1) (vector-x v2))
+      (* (vector-x v1) (vector-z v2)))
+   (- (* (vector-x v1) (vector-y v2))
+      (* (vector-y v1) (vector-x v2)))))
 
 (module* private-test #f
   (provide vector-x vector-y vector-z))
