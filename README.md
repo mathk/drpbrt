@@ -1,3 +1,3 @@
 # drpbrt
 
-![Travis Build](https://travis-ci.org/mathk/drpbrt.svg)
+[![Build Status](https://travis-ci.org/mathk/drpbrt.svg)](https://travis-ci.org/mathk/drpbrt)
