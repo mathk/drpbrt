@@ -40,4 +40,7 @@
              (check-equal? (point-move-forward o a) (point 1 2 3)))
   (test-case "Point move backward"
              (check-equal? (point-move-forward o a) (point 1 2 3)))
+  (test-case "Point direction"
+             (check-equal? (point-direction p1) (vector 1 2 3))
+             (check-equal? (point-direction p2 p1) (vector 1 0 -1)))
   )
