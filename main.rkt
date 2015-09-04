@@ -28,7 +28,6 @@
 
 (module+ test
   ;; Tests to be run with raco test
-  (require "vector/test.rkt")
   )
 
 (module+ main

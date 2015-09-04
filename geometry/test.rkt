@@ -4,7 +4,7 @@
   (require rackunit
            math/flonum
            "vector.rkt"
-           (submod "vector.rkt" private-test)
+           "point.rkt"
    )
 
   (define-simple-check (check-epsilon-eq? a b)
@@ -16,6 +16,9 @@
   (define i (vector 1 0 0))
   (define j (vector 0 1 0))
   (define k (vector 0 0 1))
+  (define o (point 0 0 0))
+  (define p1 (point 1 2 3))
+  (define p2 (point 2 2 2))
   (test-case "Vector add"
              (check-equal? (vector-add a b) (vector 5 7 9)))
   (test-case "Vector sub"
@@ -33,4 +36,8 @@
              (check-equal? (vector-cross j k) i)
              (check-equal? (vector-cross k i) j)
              (check-not-equal? (vector-cross i k) j))
+  (test-case "Point move forward"
+             (check-equal? (point-move-forward o a) (point 1 2 3)))
+  (test-case "Point move backward"
+             (check-equal? (point-move-forward o a) (point 1 2 3)))
   )

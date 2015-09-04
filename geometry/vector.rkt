@@ -70,5 +70,5 @@
    (- (* (vector-x v1) (vector-y v2))
       (* (vector-y v1) (vector-x v2)))))
 
-(module* private-test #f
+(module* internal #f
   (provide vector-x vector-y vector-z))
