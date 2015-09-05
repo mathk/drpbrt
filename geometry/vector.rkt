@@ -11,6 +11,8 @@
  vector-dot
  ;; Compute the magnitude of a vector
  vector-magnitude
+ ;; Compute the square magnitude of a vector. This operation is faster than the magnitude.
+ vector-square-magnitude
  ;; Compute cross product of two vector
  vector-cross
  ;; Compute product of vector to a number
@@ -59,7 +61,9 @@
 
 (define (vector-dot v1 v2) (vector-map-fold v1 v2 * +))
 
-(define (vector-magnitude v) (sqrt (vector-dot v v)))
+(define (vector-square-magnitude v) (vector-dot v v))
+
+(define (vector-magnitude v) (sqrt (vector-square-magnitude v)))
 
 (define (vector-cross v1 v2)
   (vector

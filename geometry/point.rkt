@@ -9,6 +9,10 @@
  point-move-backward
  ;; Return the vector directed from two point. Second point is optional and default to origin.
  point-direction
+ ;; Return the distance between two point
+ point-distance
+ ;; Return the square distance between two point
+ point-square-distance
  )
 
 (require "vector.rkt"
@@ -53,3 +57,10 @@
   (vector (- (point-x to-point) (point-x from-point))
           (- (point-y to-point) (point-y from-point))
           (- (point-z to-point) (point-z from-point))))
+
+(define (point-distance p1 p2) (vector-magnitude (point-direction p1 p2)))
+
+(define (point-square-distance p1 p2) (vector-square-magnitude (point-direction p1 p2)))
+
+(module* internal #f
+  (provide point-x point-y point-z))
