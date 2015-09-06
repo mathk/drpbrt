@@ -1,4 +1,4 @@
-#lang rackt/base
+#lang racket/base
 
 (provide 
   ;; Create a bounding box from 2 point
