@@ -5,6 +5,8 @@
   bbox-from-two-point
   ;; Return a new bounding box that wil englobe a given point
   bbox-union-point
+  ;; Return a new bounding box that wil englobe an other bounding box
+  bbox-union-bbox
   )
 
 (require "point.rkt"
@@ -31,11 +33,15 @@
 (define (bbox-from-two-point p1 p2)
   (bbox (min-point p1 p2) (max-point p1 p2)))
 
-(define (bbox-union-point bbox p)
+(define (bbox-union-point b p)
   (bbox
-    (min-point (bbox-min-p bbox) p)
-    (max-point (bbox-max-p bbox) p)
-    ))
+    (min-point (bbox-min-p b) p)
+    (max-point (bbox-max-p b) p)))
+
+(define (bbox-union-bbox b1 b2)
+  (bbox
+    (min-point (bbox-min-p b1) (bbox-min-p b2))
+    (max-point (bbox-max-p b1) (bbox-max-p b2))))
 
 (module* internal #f
   (provide 
