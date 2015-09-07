@@ -32,13 +32,12 @@
   (bbox (min-point p1 p2) (max-point p1 p2)))
 
 (define (bbox-union-point bbox p)
-  (bbox 
-    (point
-      (min (point-x (bbox-min-p bbox)) (point-x p))
-      (min (point-y (bbox-min-p bbox)) (point-y p))
-      (min (point-z (bbox-min-p bbox)) (point-z p)))
-    (point
-      (max (point-x (bbox-max-p bbox)) (point-x p))
-      (max (point-y (bbox-max-p bbox)) (point-y p))
-      (max (point-z (bbox-max-p bbox)) (point-z p)))
+  (bbox
+    (min-point (bbox-min-p bbox) p)
+    (max-point (bbox-max-p bbox) p)
     ))
+
+(module* internal #f
+  (provide 
+    bbox-min-p
+    bbox-max-p))

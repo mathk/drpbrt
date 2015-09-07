@@ -7,6 +7,7 @@
            "point.rkt"
            "ray.rkt"
            "bounding-box.rkt"
+           (submod "bounding-box.rkt" internal)
    )
 
   (define-simple-check (check-epsilon-eq? a b)
@@ -53,4 +54,8 @@
   (test-case "Ray at"
              (check-equal? (ray-at ray 1) (point 0 1 0))
              (check-equal? (ray-at ray 1.5) (point 0 1.5 0)))
+  (test-case "Bonding box creation"
+             (define bbox (bbox-from-two-point (point -1 4 -0.5) (point 5 -3 9)))
+             (check-equal? (bbox-min-p bbox) (point -1 -3 -0.5))
+             (check-equal? (bbox-max-p bboc) (point 5 4 9)))
   )

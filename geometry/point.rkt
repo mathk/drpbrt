@@ -49,7 +49,7 @@
    (op (point-y p) (vector-y v))
    (op (point-z p) (vector-z v))))
 
-(define (point-move-forward p v) (point-move + p v)) 
+(define (point-move-forward p v) (point-move + p v))
 
 (define (point-move-backward p v) (point-move - p v))
 
