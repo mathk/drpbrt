@@ -23,6 +23,9 @@
   (define p1 (point 1 2 3))
   (define p2 (point 2 2 2))
   (define ray (ray-simple o j))
+  (define bUnit (bbox-from-two-point (point 0 0 0) (point 1 1 1)))
+  (define bUnitOverlaps (bbox-from-two-point (point 0.5 0 0) (point -1 -1 -1)))
+  (define bUnitOut (bbox-from-two-point (point 1.5 1.6 1.1) (point 2 2.3 2.5)))
   (test-case "Vector add"
              (check-equal? (vector-add a b) (vector 5 7 9)))
   (test-case "Vector sub"
@@ -54,11 +57,11 @@
   (test-case "Ray at"
              (check-equal? (ray-at ray 1) (point 0 1 0))
              (check-equal? (ray-at ray 1.5) (point 0 1.5 0)))
-  (test-case "Bonding bbox creation"
+  (test-case "Bonding box creation"
              (define bbox (bbox-from-two-point (point -1 4 -0.5) (point 5 -3 9)))
              (check-equal? (bbox-min-p bbox) (point -1 -3 -0.5))
              (check-equal? (bbox-max-p bbox) (point 5 4 9.0)))
-  (test-case "Bonding bbox union"
+  (test-case "Bonding box union"
              (define b1 (bbox-from-two-point (point 0 1 0) (point 4 5 7)))
              (define b2 (bbox-from-two-point (point 1 0 1) (point 8 2 9)))
              (define bUnionB (bbox-union-bbox  b1 b2))
@@ -67,4 +70,15 @@
              (check-equal? (bbox-max-p bUnionP) (point 4 7 7))
              (check-equal? (bbox-min-p bUnionB) (point 0 0 0))
              (check-equal? (bbox-max-p bUnionB) (point 8 5 9)))
-  )
+  (test-case "Bonding box overlaps"
+             (check-true (bbox-overlaps? bUnit bUnitOverlaps))
+             (check-false (bbox-overlaps? bUnit bUnitOut)))
+  (test-case "Bonding box inside"
+             (check-true (bbox-inside? bUnit (point 0 0.5 0.9)))
+             (check-true (bbox-inside? bUnit (point 0.4 0.5 0.9)))
+             (check-false (bbox-inside? bUnit (point 0 0.5 1.9))))
+  (test-case "Bonding box expand"
+             (define bExpand (bbox-expand bUnit 0.5))
+             (check-equal? (bbox-min-p bExpand) (point -0.5 -0.5 -0.5))
+             (check-equal? (bbox-max-p bExpand) (point 1.5 1.5 1.5)))
+)
