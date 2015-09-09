@@ -64,3 +64,12 @@
 
 (module* internal #f
   (provide point-x point-y point-z))
+
+(module* plot #f
+  (provide point-plot)
+  (require plot
+           plot/utils)
+
+  (define (point-plot p)
+    (plot3d (points3d (list (list (point-x p) (point-y p) (point-z p))))))
+  )

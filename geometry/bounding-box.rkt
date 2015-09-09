@@ -89,21 +89,28 @@
     (* (vector-x diag) (vector-y diag) (vector-z diag))))
 
 (module* plot #f
-  (provide bbox-plot)
+  (provide
+    ;; Plot a bounding box
+    bbox-plot
+    ;; Return a render3d? bounding box
+    bbox-renderer)
   (require plot)
   (require plot/utils)
 
-  (define (bbox-plot b)
+  (define (bbox-renderer b)
     (let [[pmin (bbox-min-p b)]
           [pmax (bbox-max-p b)]]
+      (rectangles3d
+        (list
+          (list
+            (ivl (point-x pmin) (point-x pmax))
+            (ivl (point-y pmin) (point-y pmax))
+            (ivl (point-z pmin) (point-z pmax))))
+        #:alpha 3/4)))
+
+  (define (bbox-plot b)
       (plot3d 
-        (rectangles3d 
-          (list 
-                (list 
-                  (ivl (point-x pmin) (point-x pmax))
-                  (ivl (point-y pmin) (point-y pmax))
-                  (ivl (point-z pmin) (point-z pmax))))
-              #:alpha 3/4))))
+        (bbox-render b)))
 )
 
 (module* internal #f
