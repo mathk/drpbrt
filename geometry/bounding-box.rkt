@@ -19,12 +19,21 @@
   bbox-volume
   ;; Bounding box axis maximum extent
   bbox-max-extent
+  ;; Return the point given a vector. Vector is interpret as the unit coordinate within the bounding box
+  bbox-location
+  ;; Return the vector given a point in the bounding box. The vector return is the relative coordinate considering the bounding box as a box of length one.
+  bbox-offset
   )
 
 (require "point.rkt"
          "vector.rkt"
          (submod "vector.rkt" internal)
          (submod "point.rkt" internal))
+
+;; Utility function that calculate linear interpolation
+(define (lerp t a b) (+ (* a (- 1 t)) (* t b)))
+;; Utility function that calculate the converse of lerp
+(define (lerp-1 v a b) (/ (- v a) (- b a)))
 
 (struct bbox (min-p max-p))
 
@@ -99,6 +108,16 @@
         'y
         'z))))
 
+(define (bbox-location b v)
+  (point (lerp (vector-x v) (point-x (bbox-min-p b)) (point-x (bbox-max-p b)))
+         (lerp (vector-y v) (point-y (bbox-min-p b)) (point-y (bbox-max-p b)))
+         (lerp (vector-z v) (point-z (bbox-min-p b)) (point-z (bbox-max-p b)))))
+
+(define (bbox-offset b p)
+  (vector (lerp-1 (point-x p) (point-x (bbox-min-p b)) (point-x (bbox-max-p b)))
+         (lerp-1 (point-y p) (point-y (bbox-min-p b)) (point-y (bbox-max-p b)))
+         (lerp-1 (point-z p) (point-z (bbox-min-p b)) (point-z (bbox-max-p b)))))
+
 (module* plot #f
   (provide
     ;; Plot a bounding box
@@ -120,7 +139,7 @@
         #:alpha 3/4)))
 
   (define (bbox-plot b)
-      (plot3d 
+      (plot3d
         (bbox-renderer b)))
 )
 

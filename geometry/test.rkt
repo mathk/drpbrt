@@ -24,6 +24,7 @@
   (define p2 (point 2 2 2))
   (define ray (ray-simple o j))
   (define bUnit (bbox-from-two-point (point 0 0 0) (point 1 1 1)))
+  (define bBig (bbox-from-two-point (point 0 0 0) (point 4 4 4)))
   (define bUnitOverlaps (bbox-from-two-point (point 0.5 0 0) (point -1 -1 -1)))
   (define bUnitOut (bbox-from-two-point (point 1.5 1.6 1.1) (point 2 2.3 2.5)))
   (test-case "Vector add"
@@ -83,4 +84,8 @@
              (check-equal? (bbox-max-p bExpand) (point 1.5 1.5 1.5)))
   (test-case "Bounding box max extent"
              (check-eq? (bbox-max-extent bUnitOverlaps) 'x))
+  (test-case "Bouding box offset"
+             (check-equal? (bbox-offset bBig (point 2 2 2)) (vector 1/2 1/2 1/2)))
+  (test-case "Bouding box location"
+             (check-equal? (bbox-location bBig (vector 1/2 1/2 1/2)) (point 2 2 2)))
 )
