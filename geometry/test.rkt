@@ -81,4 +81,6 @@
              (define bExpand (bbox-expand bUnit 0.5))
              (check-equal? (bbox-min-p bExpand) (point -0.5 -0.5 -0.5))
              (check-equal? (bbox-max-p bExpand) (point 1.5 1.5 1.5)))
+  (test-case "Bounding box max extent"
+             (check-eq? (bbox-max-extent bUnitOverlaps) 'x))
 )

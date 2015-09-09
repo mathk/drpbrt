@@ -17,6 +17,8 @@
   bbox-surface
   ;; Volume of the bounding box
   bbox-volume
+  ;; Bounding box axis maximum extent
+  bbox-max-extent
   )
 
 (require "point.rkt"
@@ -88,6 +90,15 @@
   (let [[diag (bbox-diagonal b)]]
     (* (vector-x diag) (vector-y diag) (vector-z diag))))
 
+(define (bbox-max-extent b)
+  (let [[diag (bbox-diagonal b)]]
+    (if (and (> (vector-x diag) (vector-y diag))
+             (> (vector-x diag) (vector-z diag)))
+      'x
+      (if (> (vector-y diag) (vector-z diag))
+        'y
+        'z))))
+
 (module* plot #f
   (provide
     ;; Plot a bounding box
@@ -110,7 +121,7 @@
 
   (define (bbox-plot b)
       (plot3d 
-        (bbox-render b)))
+        (bbox-renderer b)))
 )
 
 (module* internal #f
