@@ -1,10 +1,10 @@
-#lang racket/base
+#lang racket
 
-(provide 
+(provide (contract-out
   ;; Create a bounding box from 2 point
-  bbox-from-two-point
+  [bbox-from-two-point (-> point? point? bbox?)]
   ;; Return a new bounding box that wil englobe a given point
-  bbox-union-point
+  [bbox-union-point (-> bbox? point? bbox?)])
   ;; Return a new bounding box that wil englobe an other bounding box
   bbox-union-bbox
   ;; Check if two bounding box overlaps
@@ -13,7 +13,7 @@
   bbox-inside?
   ;; Expand a bouding box by a constant factor
   bbox-expand
-  ;; Surface of the bounding box
+  ;; Surface of thes bounding box
   bbox-surface
   ;; Volume of the bounding box
   bbox-volume

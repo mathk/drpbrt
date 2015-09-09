@@ -13,6 +13,7 @@
  point-distance
  ;; Return the square distance between two point
  point-square-distance
+ point?
  )
 
 (require "vector.rkt"
@@ -75,5 +76,5 @@
     (points3d (list (list (point-x p) (point-y p) (point-z p)))))
 
   (define (point-plot p)
-    (plot3d (point-renderer p))
+    (plot3d (point-renderer p)))
   )
