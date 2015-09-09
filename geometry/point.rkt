@@ -66,10 +66,14 @@
   (provide point-x point-y point-z))
 
 (module* plot #f
-  (provide point-plot)
+  (provide point-plot
+           point-renderer)
   (require plot
            plot/utils)
 
+  (define (point-renderer p)
+    (points3d (list (list (point-x p) (point-y p) (point-z p)))))
+
   (define (point-plot p)
-    (plot3d (points3d (list (list (point-x p) (point-y p) (point-z p))))))
+    (plot3d (point-renderer p))
   )

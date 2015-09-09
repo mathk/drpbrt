@@ -20,14 +20,19 @@
 (define (ray-at r t) (point-move-forward (ray-origin r) (vector-time (ray-direction r) t)))
 
 (module* plot #f 
-  (provide ray-plot)
+  (provide ray-plot
+           ray-renderer)
   (require plot
            plot/utils
            (submod "point.rkt" internal))
 
-  (define (ray-plot r)
+
+  (define (ray-renderer r)
     (let [[plot-ray-at (lambda (t) 
                          (let [[at (ray-at r t)]]
                            (list (point-x at) (point-y at) (point-z at))))]]
-    (plot3d (parametric3d plot-ray-at (ray-mint r) (min 1000000 (ray-maxt r))))))
+      (parametric3d plot-ray-at (ray-mint r) (min 1000000 (ray-maxt r)))))
+
+  (define (ray-plot r)
+    (plot3d (ray-renderer r)))
   )
