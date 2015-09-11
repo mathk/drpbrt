@@ -88,4 +88,10 @@
              (check-equal? (bbox-offset bBig (point 2 2 2)) (vector 1/2 1/2 1/2)))
   (test-case "Bouding box location"
              (check-equal? (bbox-location bBig (vector 1/2 1/2 1/2)) (point 2 2 2)))
+  (test-case "Point middle"
+             (check-equal? (point-middle o p2) (point 1 1 1)))
+  (test-case "Bounding box sphere"
+             (define sphr (bbox-enclosing-sphere bUnit))
+             (check-equal? (sphere-center sphr) (point 1/2 1/2 1/2))
+             (check-epsilon-eq? (sphere-radius sphr) (sqrt 0.75)))
 )

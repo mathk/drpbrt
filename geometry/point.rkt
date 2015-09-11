@@ -1,4 +1,4 @@
-#lang racket/base
+#lang racket
 
 (provide
  ;; Create a new point
@@ -13,6 +13,9 @@
  point-distance
  ;; Return the square distance between two point
  point-square-distance
+ ;; Return the middle point between two point
+ point-middle
+ ;; Assert that a given object is a point
  point?
  )
 
@@ -44,6 +47,37 @@
         (hash-recur (point-y a))
         (hash-recur (point-z a))))])
 
+;; Internal routine to manipulate point
+
+;; Mapping a function to each point coordinate
+(define (point-map func p1)
+  (point
+    (func (point-x p1))
+    (func (point-y p1))
+    (func (point-z p1))))
+
+;; Helper function that mutiply each coordinate of a point
+;; by a number.
+(define (point-time p1 v)
+  (point-map (curry * v) p1))
+
+;; Helper function given two point it create a new point
+;; Using the zip function to concatenate the point coordinate.
+(define (point-zip zip p1 p2)
+  (point
+    (zip (point-x p1) (point-x p2))
+    (zip (point-y p1) (point-y p2))
+    (zip (point-z p1) (point-z p2))))
+
+;; Helper function that return the new point where each
+;; coordinate is the sum of two point coordinate.
+(define (point-add p1 p2)
+  (point-zip + p1 p2))
+
+;;
+;; Begin of the expose function
+;;
+
 (define (point-move op p v)
   (point
    (op (point-x p) (vector-x v))
@@ -62,6 +96,8 @@
 (define (point-distance p1 p2) (vector-magnitude (point-direction p1 p2)))
 
 (define (point-square-distance p1 p2) (vector-square-magnitude (point-direction p1 p2)))
+
+(define (point-middle p1 p2) (point-add (point-time p1 1/2) (point-time p2 1/2)))
 
 (module* internal #f
   (provide point-x point-y point-z))

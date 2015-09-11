@@ -23,6 +23,11 @@
   bbox-location
   ;; Return the vector given a point in the bounding box. The vector return is the relative coordinate considering the bounding box as a box of length one.
   bbox-offset
+  ;; Return the sphere that enclose the bounding box
+  bbox-enclosing-sphere
+  ;; Sphere access function
+  sphere-center
+  sphere-radius
   )
 
 (require "point.rkt"
@@ -30,12 +35,15 @@
          (submod "vector.rkt" internal)
          (submod "point.rkt" internal))
 
+
 ;; Utility function that calculate linear interpolation
 (define (lerp t a b) (+ (* a (- 1 t)) (* t b)))
 ;; Utility function that calculate the converse of lerp
 (define (lerp-1 v a b) (/ (- v a) (- b a)))
 
 (struct bbox (min-p max-p))
+
+(struct sphere (center radius))
 
 (define (zip-reduce-point zip reduce p1 p2)
   (reduce
@@ -118,6 +126,12 @@
          (lerp-1 (point-y p) (point-y (bbox-min-p b)) (point-y (bbox-max-p b)))
          (lerp-1 (point-z p) (point-z (bbox-min-p b)) (point-z (bbox-max-p b)))))
 
+(define (bbox-enclosing-sphere b)
+  (let* [[center (point-middle (bbox-min-p b) (bbox-max-p b))]
+         [radius (point-distance center (bbox-max-p b))]]
+    (sphere center radius)))
+
+
 (module* plot #f
   (provide
     ;; Plot a bounding box
@@ -144,6 +158,6 @@
 )
 
 (module* internal #f
-  (provide 
+  (provide
     bbox-min-p
     bbox-max-p))
