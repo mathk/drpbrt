@@ -7,6 +7,7 @@
            "point.rkt"
            "ray.rkt"
            "bounding-box.rkt"
+           "transform.rkt"
            (submod "bounding-box.rkt" internal)
    )
 
@@ -27,6 +28,7 @@
   (define bBig (bbox-from-two-point (point 0 0 0) (point 4 4 4)))
   (define bUnitOverlaps (bbox-from-two-point (point 0.5 0 0) (point -1 -1 -1)))
   (define bUnitOut (bbox-from-two-point (point 1.5 1.6 1.1) (point 2 2.3 2.5)))
+  (define scale (transform-scale 1 2 1))
   (test-case "Vector add"
              (check-equal? (vector-add a b) (vector 5 7 9)))
   (test-case "Vector sub"
@@ -94,4 +96,10 @@
              (define sphr (bbox-enclosing-sphere bUnit))
              (check-equal? (sphere-center sphr) (point 1/2 1/2 1/2))
              (check-epsilon-eq? (sphere-radius sphr) (sqrt 0.75)))
+  (test-case "Transform scale"
+             (define scale-bbox (transform-bbox-apply scale bUnit))
+             (check-equal? (transform-point-apply scale (point 1 2 3)) (point 1 4 3))
+             (check-equal? (transform-normal-apply scale (vector 1 1 1)) (vector 1 1/2 1))
+             (check-equal? (bbox-min-p scale-bbox) (point 0 0 0))
+             (check-equal? (bbox-max-p scale-bbox) (point 1 2 1)))
 )

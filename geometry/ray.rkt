@@ -7,6 +7,8 @@
  ray-simple
  ;; Get the point allong the ray at given parametric value
  ray-at
+ ;; Create a new ray from one ray changing the origin and direction
+ ray-new-origin-direction
  )
 
 (require math/flonum
@@ -17,7 +19,18 @@
 
 (define (ray-simple o d) (ray o d 0 +max.0 0))
 
+(define (ray-new-origin-direction r o d)
+  (ray o d (ray-mint r) (ray-maxt r) (ray-bounce-count r)))
+
 (define (ray-at r t) (point-move-forward (ray-origin r) (vector-time (ray-direction r) t)))
+
+(module* internal #f
+  (provide
+    ray-origin
+    ray-direction
+    ray-mint
+    ray-maxt
+    ray-bounce-count))
 
 (module* plot #f 
   (provide ray-plot

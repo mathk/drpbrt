@@ -19,6 +19,8 @@
  vector-time
  ;; Compute division of vector to a number
  vector-divide
+ ;; Return a normalize vector
+ vector-normalized
  )
 
 (require racket/list)
