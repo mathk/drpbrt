@@ -31,6 +31,8 @@
   transform-bbox-apply
   ;; Compose two transformation together
   transform-compose
+  ;; Tell if a transformation change the coordinate handedness
+  transform-swap-handedness?
   )
 
 (require math/matrix
@@ -118,7 +120,7 @@
        [0       0               0 1]])
     (matrix
       [[(cos r)         (sin r) 0 0]
-       [(-0 (sin r))    (cos r) 0 0]
+       [(- 0 (sin r))   (cos r) 0 0]
        [0               0       1 0]
        [0               0       0 1]])))
 
@@ -224,8 +226,11 @@
 
 (define (transform-compose t1 t2)
   (transform 
-    (matrix* (trasnform-matrix t1) (transform-matrix t2))
-    (matrix* (trasnform-inverted t2) (transform-inverted t1))))
+    (matrix* (transform-matrix t1) (transform-matrix t2))
+    (matrix* (transform-inverted t2) (transform-inverted t1))))
+
+(define (transform-swap-handedness? t)
+  (> 0 (matrix-determinant (submatrix (transform-matrix t) (:: 0 2 1) (:: 0 2 1)))))
 
 (define (transform-point-apply t p)
   (let* [[p-in (matrix [[(point-x p)] [(point-y p)] [(point-z p)] [1]])]
