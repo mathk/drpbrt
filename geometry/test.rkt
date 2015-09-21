@@ -9,6 +9,7 @@
            "ray.rkt"
            "bounding-box.rkt"
            "transform.rkt"
+           "sphere.rkt"
            (submod "bounding-box.rkt" internal)
            (submod "point.rkt" internal)
    )
@@ -120,4 +121,7 @@
   (test-case "Transform handedness"
              (check-true (transform-swap-handedness? reverse-scale))
              (check-false (transform-swap-handedness? scale)))
+
+  (define sphere (sphere-init 3 -2 6 9))
+
 )
