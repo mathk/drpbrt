@@ -25,9 +25,12 @@
   bbox-offset
   ;; Return the sphere that enclose the bounding box
   bbox-enclosing-sphere
-  ;; Sphere access function
-  sphere-center
-  sphere-radius
+  bbox-min-x
+  bbox-max-x
+  bbox-min-y
+  bbox-max-y
+  bbox-min-z
+  bbox-max-z
   )
 
 (require "point.rkt"
@@ -44,6 +47,14 @@
 (struct bbox (min-p max-p))
 
 (struct sphere (center radius))
+
+
+(define (bbox-min-x b) (point-x (bbox-min-p b)))
+(define (bbox-max-x b) (point-x (bbox-max-p b)))
+(define (bbox-min-y b) (point-y (bbox-min-p b)))
+(define (bbox-max-y b) (point-y (bbox-max-p b)))
+(define (bbox-min-z b) (point-z (bbox-min-p b)))
+(define (bbox-max-z b) (point-z (bbox-max-p b)))
 
 (define (zip-reduce-point zip reduce p1 p2)
   (reduce
@@ -129,7 +140,7 @@
 (define (bbox-enclosing-sphere b)
   (let* [[center (point-middle (bbox-min-p b) (bbox-max-p b))]
          [radius (point-distance center (bbox-max-p b))]]
-    (sphere center radius)))
+    (values center radius)))
 
 
 (module* plot #f

@@ -1,6 +1,5 @@
 #lang racket
 
-
 (provide 
   (contract-out
     ;; Create a sphere shape
@@ -13,7 +12,9 @@
            [result sphere?])]))
 
 (require
-  math)
+  math
+  "point.rkt"
+  "bounding-box.rkt")
 
 ;; Define a sphere shape.
 ;; The sphere always assume the center to be <0, 0, 0>.
@@ -39,9 +40,28 @@
 
         )
 
-
 (define (sphere-init radius z-min z-max phi-max)
-  (sphere radius z-min z-max (acos (/ z-min radius)) (acos (/ z-max radius)) phi-max))
+  (sphere radius z-min z-max (acos (/ z-max radius)) (acos (/ z-min radius)) phi-max))
+
+(define (sphere-bbox s)
+  (let* [[radius (sphere-radius s)]
+         [radius-inv (- 0 radius)]
+         [phi (sphere-phi-max s)]
+         [min-y (cond 
+                  [(<= (* pi 3/2) phi) radius]
+                  [(< pi phi (* pi 3/2)) (* radius (sin phi))]
+                  [else 0])]
+         [max-y (cond 
+                  [(< phi (* 1/2 pi)) (* radius (sin phi))]
+                  [else radius])]
+         [max-x radius]
+         [min-x (cond
+                  [(and (< (* 1/2 pi) phi) (< phi pi)) (* radius (cos phi))]
+                  [(<= phi (* 1/2 pi)) 0]
+                  [else radius-inv])]]
+    (bbox-from-two-point 
+      (point min-x min-y (sphere-z-min s))
+      (point max-x max-y (sphere-z-max s)))))
 
 
 (module* plot #f
@@ -52,11 +72,30 @@
            plot/utils)
 
   (define (sphere-renderer s)
-    (polar3d (lambda (theta phi) 
-               (cond [(< (- (sphere-theta-max s) (/ pi 2)) theta (- (sphere-theta-min s) (/ pi 2))) 0]
-                     [(< 0 phi (sphere-phi-max s)) 0]
-                     [else (sphere-radius s)]))))
+    (let [[bbox (sphere-bbox s)]]
+      (polar3d 
+        (lambda (theta phi)
+          (cond
+            [(> theta (sphere-phi-max s)) (- 0 (sphere-radius s))]
+            [else (sphere-radius s)]))
+        #:z-min (bbox-min-z bbox)
+        #:z-max (bbox-max-z bbox)
+        #:y-min (bbox-min-y bbox)
+        #:y-max (bbox-max-y bbox)
+        #:x-min (bbox-min-x bbox)
+        #:x-max (bbox-max-x bbox))))
 
   (define (sphere-plot s)
     (plot3d (sphere-renderer s)))
   )
+
+
+(module* main #f
+  (define mys (sphere-init 9 -8 8 (* 2/3 pi)))
+  (require 
+    plot
+    (submod ".." plot)
+    (submod "bounding-box.rkt" plot))
+  (plot3d (list 
+    (sphere-renderer mys)
+    (bbox-renderer (sphere-bbox mys)))))

@@ -105,9 +105,9 @@
   (test-case "Point middle"
              (check-equal? (point-middle o p2) (point 1 1 1)))
   (test-case "Bounding box sphere"
-             (define sphr (bbox-enclosing-sphere bUnit))
-             (check-equal? (sphere-center sphr) (point 1/2 1/2 1/2))
-             (check-almost-equal?? 1.0e-10 (sphere-radius sphr) (sqrt 0.75)))
+             (define-values (center radius) (bbox-enclosing-sphere bUnit))
+             (check-equal?  center (point 1/2 1/2 1/2))
+             (check-almost-equal?? 1.0e-10  radius (sqrt 0.75)))
   (test-case "Transform scale"
              (define scale-bbox (transform-bbox-apply scale bUnit))
              (check-equal? (transform-point-apply scale (point 1 2 3)) (point 1 4 3))
@@ -121,7 +121,4 @@
   (test-case "Transform handedness"
              (check-true (transform-swap-handedness? reverse-scale))
              (check-false (transform-swap-handedness? scale)))
-
-  (define sphere (sphere-init 3 -2 6 9))
-
 )
