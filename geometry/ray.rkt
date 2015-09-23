@@ -9,6 +9,12 @@
  ray-at
  ;; Create a new ray from one ray changing the origin and direction
  ray-new-origin-direction
+ ;; Get the origin of a ray
+ ray-origin
+ ;; Get the direction of a ray
+ ray-direction
+ ;; Check if a given parametric value of the ray it is in the range.
+ ray-in-range
  )
 
 (require math/flonum
@@ -24,10 +30,11 @@
 
 (define (ray-at r t) (point-move-forward (ray-origin r) (vector-time (ray-direction r) t)))
 
+(define (ray-in-range r t)
+  (< (ray-mint r) t (ray-maxt r)))
+
 (module* internal #f
   (provide
-    ray-origin
-    ray-direction
     ray-mint
     ray-maxt
     ray-bounce-count))

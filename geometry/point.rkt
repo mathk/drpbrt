@@ -17,6 +17,8 @@
  point-middle
  ;; Assert that a given object is a point
  point?
+ ;; Get all coordinate of a point
+ point-values
  )
 
 (require "vector.rkt"
@@ -77,6 +79,11 @@
 ;;
 ;; Begin of the expose function
 ;;
+
+(define (point-values p) 
+  (values (point-x p)
+          (point-y p)
+          (point-z p)))
 
 (define (point-move op p v)
   (point

@@ -11,10 +11,11 @@
             [phi-max (between/c 0.0 (* 2 pi))])
            [result sphere?])]))
 
-(require
-  math
-  "point.rkt"
-  "bounding-box.rkt")
+(require math
+         "point.rkt"
+         "ray.rkt"
+         "vector.rkt"
+         "bounding-box.rkt")
 
 ;; Define a sphere shape.
 ;; The sphere always assume the center to be <0, 0, 0>.
@@ -63,6 +64,21 @@
       (point min-x min-y (sphere-z-min s))
       (point max-x max-y (sphere-z-max s)))))
 
+(define (sphere-intersect s ray)
+  (let*-values
+    [[(d) (ray-direction ray)]
+     [(dx dy dz) (vector-values d)]
+     [(ox oy oz) (point-values (ray-origin ray))]
+     [(a) (- (vector-square-magnitude d))]
+     [(b) (* 2 (+ (* dx ox) (* dy oy) (* dz oz)))]
+     [(c) (- (+ (sqr ox) (sqr oy) (sqr oz)) (sqr (sphere-radius s)))]
+     [(delta) (- (sqr b) (* 4 a c))]]
+    (if (< delta 0)
+      (values #f)
+      (let* [[quad (sqrt delta)]
+             [denom (/ 1 (* a 2))]
+             [b-inv (- 0 b)]]
+        (values #t (* (+ b-inv quad) denom) (* (- b-inv quad) denom))))))
 
 (module* plot #f
   (provide sphere-plot

@@ -21,6 +21,8 @@
  vector-divide
  ;; Return a normalize vector
  vector-normalized
+ ;; Get all the component of a vector
+ vector-values
  )
 
 (require racket/list)
@@ -82,6 +84,11 @@
       (* (vector-x v1) (vector-z v2)))
    (- (* (vector-x v1) (vector-y v2))
       (* (vector-y v1) (vector-x v2)))))
+
+(define (vector-values v)
+  (values (vector-x v)
+          (vector-y v)
+          (vector-z v)))
 
 (module* internal #f
   (provide vector-x vector-y vector-z))

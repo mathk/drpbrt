@@ -33,7 +33,8 @@
   (define o (point 0 0 0))
   (define p1 (point 1 2 3))
   (define p2 (point 2 2 2))
-  (define ray (ray-simple o j))
+  (define ray-s (ray-simple o j))
+  (define ray-small (ray o j 0 10 0))
   (define bUnit (bbox-from-two-point (point 0 0 0) (point 1 1 1)))
   (define bBig (bbox-from-two-point (point 0 0 0) (point 4 4 4)))
   (define bUnitOverlaps (bbox-from-two-point (point 0.5 0 0) (point -1 -1 -1)))
@@ -69,9 +70,13 @@
   (test-case "Point distance"
              (check-almost-equal?? 1.0e-10 (point-distance p1 o) (sqrt 14))
              (check-eq? (point-square-distance p1 o) 14))
+  (test-case "Ray in range"
+             (check-true (ray-in-range ray-small 9.2))
+             (check-false (ray-in-range ray-small -2))
+             (check-false (ray-in-range ray-small 11.2)))
   (test-case "Ray at"
-             (check-equal? (ray-at ray 1) (point 0 1 0))
-             (check-equal? (ray-at ray 1.5) (point 0 1.5 0)))
+             (check-equal? (ray-at ray-s 1) (point 0 1 0))
+             (check-equal? (ray-at ray-s 1.5) (point 0 1.5 0)))
   (test-case "Bonding box creation"
              (define bbox (bbox-from-two-point (point -1 4 -0.5) (point 5 -3 9)))
              (check-equal? (bbox-min-p bbox) (point -1 -3 -0.5))
