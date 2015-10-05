@@ -59,7 +59,9 @@
   (case (peek-char port)
     [(#\:) (parse-struct 'point #\: port read-one src)]
     [(#\~) (parse-struct 'vector #\~ port read-one src)]
-    [else '<]))
+
+    [else 
+      (read/recursive port #\< #f #f)]))
 
 (define delimiter-table
   (letrec ([misplaced-delimiter

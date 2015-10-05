@@ -1,23 +1,23 @@
-#lang racket
+#lang geopbrt
 
 (module+ test
   (require rackunit
            math
            math/flonum
-           "../drpbrt/geometry/vector.rkt"
-           "../drpbrt/geometry/point.rkt"
-           "../drpbrt/geometry/ray.rkt"
-           "../drpbrt/geometry/bounding-box.rkt"
-           "../drpbrt/geometry/transform.rkt"
-           "../drpbrt/geometry/sphere.rkt"
-           (submod "../drpbrt/geometry/bounding-box.rkt" internal)
-           (submod "../drpbrt/geometry/point.rkt" internal)
+           geometry/vector
+           geometry/point
+           geometry/ray
+           geometry/bounding-box
+           geometry/transform
+           geometry/sphere
+           (submod geometry/bounding-box internal)
+           (submod geometry/point internal)
    )
 
   (define (almost-equal? epsilon a b )
     (<= (absolute-error a b) epsilon))
 
-  (define-simple-check (check-almost-equal?? epsilon a b)
+  (define-simple-check (check-almost-equal? epsilon a b)
                        (almost-equal? epsilon a b))
 
   (define-simple-check (check-point-almost-equal? epsilon a b)
@@ -54,7 +54,7 @@
              (check-eq? (vector-dot a b) 32))
   (test-case "Vector magnitude"
              (check-eq? (vector-square-magnitude c) 12)
-             (check-almost-equal?? 1.0e-10 (vector-magnitude c) (sqrt 12)))
+             (check-almost-equal? 1.0e-10 (vector-magnitude c) (sqrt 12)))
   (test-case "Vector cross"
              (check-equal? (vector-cross i j) k)
              (check-equal? (vector-cross j k) i)
@@ -68,7 +68,7 @@
              (check-equal? (point-direction p1) (vector 1 2 3))
              (check-equal? (point-direction p2 p1) (vector 1 0 -1)))
   (test-case "Point distance"
-             (check-almost-equal?? 1.0e-10 (point-distance p1 o) (sqrt 14))
+             (check-almost-equal? 1.0e-10 (point-distance p1 o) (sqrt 14))
              (check-eq? (point-square-distance p1 o) 14))
   (test-case "Ray in range"
              (check-true (ray-in-range ray-small 9.2))
@@ -112,7 +112,7 @@
   (test-case "Bounding box sphere"
              (define-values (center radius) (bbox-enclosing-sphere bUnit))
              (check-equal?  center (point 1/2 1/2 1/2))
-             (check-almost-equal?? 1.0e-10  radius (sqrt 0.75)))
+             (check-almost-equal? 1.0e-10  radius (sqrt 0.75)))
   (test-case "Transform scale"
              (define scale-bbox (transform-bbox-apply scale bUnit))
              (check-equal? (transform-point-apply scale (point 1 2 3)) (point 1 4 3))

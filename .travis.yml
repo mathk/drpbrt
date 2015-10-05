@@ -49,6 +49,8 @@ before_install:
 
 install:
 
+ - /home/travis/racket/bin/raco pkg install  ./drpbrt/
+
 before_script:
 
 # Here supply steps such as raco make, raco test, etc.  Note that you
@@ -56,6 +58,6 @@ before_script:
 # `raco pkg install --deps search-auto <<name>>` to install any required
 # packages without it getting stuck on a confirmation prompt.
 script:
- - /home/travis/racket/bin/raco test -x .
+ - /home/travis/racket/bin/raco test -x ./tests/
 
 after_script:
