@@ -21,20 +21,22 @@
  point-values
  )
 
-(require "vector.rkt"
-         (submod "vector.rkt" internal))
+(require
+  racket/block
+  "vector.rkt"
+  (submod "vector.rkt" internal))
 
 (struct point (x y z)
   #:methods gen:custom-write
   [(define (write-proc point port mode)
      (let ([print (if mode write display)])
-       (write-string "(" port)
+       (write-string "<:" port)
        (print (point-x point) port)
        (write-string ", " port)
        (print (point-y point) port)
        (write-string ", " port)
        (print (point-z point) port)
-       (write-string ")" port)))]
+       (write-string ":>" port)))]
   #:methods gen:equal+hash
   [(define (equal-proc a b equal?-recur)
      (and (equal?-recur (point-x a) (point-x b))
