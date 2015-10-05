@@ -4,14 +4,14 @@
   (require rackunit
            math
            math/flonum
-           "vector.rkt"
-           "point.rkt"
-           "ray.rkt"
-           "bounding-box.rkt"
-           "transform.rkt"
-           "sphere.rkt"
-           (submod "bounding-box.rkt" internal)
-           (submod "point.rkt" internal)
+           "../drpbrt/geometry/vector.rkt"
+           "../drpbrt/geometry/point.rkt"
+           "../drpbrt/geometry/ray.rkt"
+           "../drpbrt/geometry/bounding-box.rkt"
+           "../drpbrt/geometry/transform.rkt"
+           "../drpbrt/geometry/sphere.rkt"
+           (submod "../drpbrt/geometry/bounding-box.rkt" internal)
+           (submod "../drpbrt/geometry/point.rkt" internal)
    )
 
   (define (almost-equal? epsilon a b )
