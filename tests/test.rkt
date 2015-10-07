@@ -35,21 +35,24 @@
   (define p2 (point 2 2 2))
   (define ray-s (ray-simple o j))
   (define ray-small (ray o j 0 10 0))
-  (define bUnit (bbox-from-two-point (point 0 0 0) (point 1 1 1)))
-  (define bBig (bbox-from-two-point (point 0 0 0) (point 4 4 4)))
-  (define bUnitOverlaps (bbox-from-two-point (point 0.5 0 0) (point -1 -1 -1)))
-  (define bUnitOut (bbox-from-two-point (point 1.5 1.6 1.1) (point 2 2.3 2.5)))
+  (define bUnit (bbox-from-two-point <:0, 0, 0:> <:1, 1, 1:>))
+  (define bBig (bbox-from-two-point <:0, 0, 0:> <:4, 4, 4:>))
+  (define bUnitOverlaps (bbox-from-two-point <:0.5, 0, 0:> <:-1, -1, -1:>))
+  (define bUnitOut (bbox-from-two-point <:1.5, 1.6, 1.1:> <:2, 2.3, 2.5:>))
   (define scale (transform-scale 1 2 1))
   (define rotate-z (transform-rotate-z (/ pi 2)))
   (define reverse-scale (transform-scale 1 -1 1))
+  (define sphere (sphere-init 3.2 -2 2 (* 2 pi)))
+  (define ray-straight (ray-simple o <~1, 0, 0~>))
+  (define ray-up (ray-simple o <~1, 0, 5~>))
   (test-case "Vector add"
-             (check-equal? (vector-add a b) (vector 5 7 9)))
+             (check-equal? (vector-add a b) <~5, 7, 9~>))
   (test-case "Vector sub"
-             (check-equal? (vector-sub a b) (vector -3 -3 -3)))
+             (check-equal? (vector-sub a b) <~-3, -3, -3~>))
   (test-case "Vector time"
-             (check-equal? (vector-time a 2) (vector 2 4 6)))
+             (check-equal? (vector-time a 2) <~2, 4, 6~>))
   (test-case "Vector divide"
-             (check-equal? (vector-divide b 2) (vector 2 (/ 5 2) 3)))
+             (check-equal? (vector-divide b 2) <~2, (/ 5 2), 3~>))
   (test-case "Vector dot"
              (check-eq? (vector-dot a b) 32))
   (test-case "Vector magnitude"
@@ -71,9 +74,12 @@
              (check-almost-equal? 1.0e-10 (point-distance p1 o) (sqrt 14))
              (check-eq? (point-square-distance p1 o) 14))
   (test-case "Ray in range"
-             (check-true (ray-in-range ray-small 9.2))
-             (check-false (ray-in-range ray-small -2))
-             (check-false (ray-in-range ray-small 11.2)))
+             (check-eq? (ray-in-range? ray-small 9.2) 9.2)
+             (check-false (ray-in-range? ray-small -2))
+             (check-false (ray-in-range? ray-small 11.2))
+             (define-values (t0 t1) (ray-in-range? ray-small -1 2))
+             (check-false t0)
+             (check-eq? t1 2))
   (test-case "Ray at"
              (check-equal? (ray-at ray-s 1) (point 0 1 0))
              (check-equal? (ray-at ray-s 1.5) (point 0 1.5 0)))
@@ -126,4 +132,7 @@
   (test-case "Transform handedness"
              (check-true (transform-swap-handedness? reverse-scale))
              (check-false (transform-swap-handedness? scale)))
+  (test-case "Sphere intersect"
+             (check-almost-equal? 1.0e-10 (sphere-intersect-hit sphere ray-straight) 3.2)
+             (check-false (sphere-intersect-hit sphere ray-up)))
 )

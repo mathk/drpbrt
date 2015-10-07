@@ -6,20 +6,24 @@
     [sphere-init 
       (->i (
             [radius number?]
-            [z-max (radius) (<=/c radius)]
-            [z-min (z-max radius) (between/c (- 0 radius) z-max)]
+            [z-min (radius) (>=/c (- radius))]
+            [z-max (radius z-min) (between/c z-min radius)]
             [phi-max (between/c 0.0 (* 2 pi))])
-           [result sphere?])]))
+           [result sphere?])])
+  sphere-intersect-hit
+  sphere-quadratic-hit)
 
 (require math
+         racket/trace
          "point.rkt"
          "ray.rkt"
          "vector.rkt"
-         "bounding-box.rkt")
+         "bounding-box.rkt"
+         (submod "point.rkt" internal))
 
 ;; Define a sphere shape.
 ;; The sphere always assume the center to be <0, 0, 0>.
-;; z-min and z-max cut the sphere along the z axis.
+;; z-min and z-max cut the   along the z axis.
 ;; phi max is the cut off angle starting from the x axis around z.
 (struct sphere (radius z-min z-max theta-min theta-max phi-max)
         #:methods gen:custom-write
@@ -45,11 +49,11 @@
   (sphere radius z-min z-max (acos (/ z-max radius)) (acos (/ z-min radius)) phi-max))
 
 (define (sphere-bbox s)
-  (let* [[radius (sphere-radius s)]
+  (let* ([radius (sphere-radius s)]
          [radius-inv (- 0 radius)]
          [phi (sphere-phi-max s)]
          [min-y (cond 
-                  [(<= (* pi 3/2) phi) radius]
+                  [(<= (* pi 3/2) phi) radius-inv]
                   [(< pi phi (* pi 3/2)) (* radius (sin phi))]
                   [else 0])]
          [max-y (cond 
@@ -59,26 +63,50 @@
          [min-x (cond
                   [(and (< (* 1/2 pi) phi) (< phi pi)) (* radius (cos phi))]
                   [(<= phi (* 1/2 pi)) 0]
-                  [else radius-inv])]]
+                  [else radius-inv])])
     (bbox-from-two-point 
       (point min-x min-y (sphere-z-min s))
       (point max-x max-y (sphere-z-max s)))))
 
-(define (sphere-intersect s ray)
+(define (sphere-quadratic-hit s ray)
   (let*-values
     [[(d) (ray-direction ray)]
      [(dx dy dz) (vector-values d)]
      [(ox oy oz) (point-values (ray-origin ray))]
-     [(a) (- (vector-square-magnitude d))]
+     [(a) (vector-square-magnitude d)]
      [(b) (* 2 (+ (* dx ox) (* dy oy) (* dz oz)))]
      [(c) (- (+ (sqr ox) (sqr oy) (sqr oz)) (sqr (sphere-radius s)))]
      [(delta) (- (sqr b) (* 4 a c))]]
+    (log-debug "(quadratic-hit a: ~a, b: ~a, c: ~a" a b c)
     (if (< delta 0)
-      (values #f)
+      (values #f #f)
       (let* [[quad (sqrt delta)]
-             [denom (/ 1 (* a 2))]
-             [b-inv (- 0 b)]]
-        (values #t (* (+ b-inv quad) denom) (* (- b-inv quad) denom))))))
+             [q (* -1/2 (+ b quad))]
+             [t0 (/ q a)]
+             [t1 (/ c q)]]
+        (ray-in-range? ray (min t0 t1) (max t0 t1))))))
+
+(define (sphere-intersect-hit s ray)
+  (let-values
+    ;; Get the first hit point
+    ([(hit0 hit1) (sphere-quadratic-hit s ray)])
+    (if (and hit0 (sphere-hit-in? s ray hit0))
+      hit0
+      (if (and hit1 (sphere-hit-in? s ray hit1))
+        hit1
+        #f))))
+
+(define (sphere-hit-in? s ray t)
+  (let* ([p (ray-at ray t)]
+         [pz (point-z p)]
+         [px (point-x p)]
+         [py (point-y p)]
+         [z-min (sphere-z-min s)]
+         [z-max (sphere-z-max s)]
+         [phi-max (sphere-phi-max s)])
+    (if (not (< z-min pz z-max))
+      #f
+      (< (atan px py) phi-max))))
 
 (module* plot #f
   (provide sphere-plot
@@ -108,10 +136,16 @@
 
 (module* main #f
   (define mys (sphere-init 9 -8 8 (* 2/3 pi)))
-  (require 
+  (require
+    racket/trace
     plot
+    "ray.rkt"
     (submod ".." plot)
     (submod "bounding-box.rkt" plot))
-  (plot3d (list 
-    (sphere-renderer mys)
-    (bbox-renderer (sphere-bbox mys)))))
+
+  (define sphere (sphere-init 3.2 -2 2 (* 2 pi)))
+  sphere
+  (define ray-straight (ray-simple (point 0 0 0) (vector 1 1 0)))
+  (sphere-quadratic-hit sphere ray-straight)
+  (sphere-intersect-hit sphere ray-straight)
+  )

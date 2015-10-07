@@ -14,7 +14,7 @@
  ;; Get the direction of a ray
  ray-direction
  ;; Check if a given parametric value of the ray it is in the range.
- ray-in-range
+ ray-in-range?
  )
 
 (require math/flonum
@@ -30,8 +30,9 @@
 
 (define (ray-at r t) (point-move-forward (ray-origin r) (vector-time (ray-direction r) t)))
 
-(define (ray-in-range r t)
-  (< (ray-mint r) t (ray-maxt r)))
+(define (ray-in-range? r . t)
+  (let ([in-range (lambda (x) (if (< (ray-mint r) x (ray-maxt r)) x #f))])
+    (apply values (map in-range t))))
 
 (module* internal #f
   (provide
@@ -51,7 +52,7 @@
     (let [[plot-ray-at (lambda (t) 
                          (let [[at (ray-at r t)]]
                            (list (point-x at) (point-y at) (point-z at))))]]
-      (parametric3d plot-ray-at (ray-mint r) (min 1000000 (ray-maxt r)))))
+      (parametric3d plot-ray-at (ray-mint r) (min 100 (ray-maxt r)))))
 
   (define (ray-plot r)
     (plot3d (ray-renderer r)))
