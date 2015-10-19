@@ -31,7 +31,7 @@
 
 ;; Test if a hit point is in the range
 ;; of the clip shape.
-(define (cylinder-hit-in? s ray t)
+(define (cylinder-hit-in? c ray t)
   (let-values ([(px py pz) (point-values (ray-at ray t))]
                [(z-min z-max) (cylinder-z-range-values c)]
                [(phi-max) (cylinder-phi-max c)])
