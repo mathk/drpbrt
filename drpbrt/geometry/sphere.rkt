@@ -19,6 +19,7 @@
          "ray.rkt"
          "vector.rkt"
          "bounding-box.rkt"
+         "shape-utils.rkt"
          (submod "point.rkt" internal))
 
 ;; Define a sphere shape.
@@ -70,21 +71,13 @@
 
 (define (sphere-quadratic-hit s ray)
   (let*-values
-    [[(d) (ray-direction ray)]
+    ([(d) (ray-direction ray)]
      [(dx dy dz) (vector-values d)]
      [(ox oy oz) (point-values (ray-origin ray))]
      [(a) (vector-square-magnitude d)]
      [(b) (* 2 (+ (* dx ox) (* dy oy) (* dz oz)))]
-     [(c) (- (+ (sqr ox) (sqr oy) (sqr oz)) (sqr (sphere-radius s)))]
-     [(delta) (- (sqr b) (* 4 a c))]]
-    (log-debug "(quadratic-hit a: ~a, b: ~a, c: ~a" a b c)
-    (if (< delta 0)
-      (values #f #f)
-      (let* [[quad (sqrt delta)]
-             [q (* -1/2 (+ b quad))]
-             [t0 (/ q a)]
-             [t1 (/ c q)]]
-        (ray-in-range? ray (min t0 t1) (max t0 t1))))))
+     [(c) (- (+ (sqr ox) (sqr oy) (sqr oz)) (sqr (sphere-radius s)))])
+    (quadratic-solve-in-range a b c ray)))
 
 (define (sphere-intersect-hit s ray)
   (let-values
@@ -106,7 +99,7 @@
          [phi-max (sphere-phi-max s)])
     (if (not (< z-min pz z-max))
       #f
-      (< (atan px py) phi-max))))
+      (< (atan py px) phi-max))))
 
 (module* plot #f
   (provide sphere-plot
