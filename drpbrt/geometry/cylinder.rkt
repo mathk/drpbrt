@@ -12,7 +12,7 @@
 ;; Define a cylinder shpae
 ;; Cynlinder are always define centered arround
 ;; the z axis.
-(struct cylinder (radius z-min z-max phi-max)
+(struct cylinder (radius z-min z-max phi-max))
 
 (define (cylinder-init radius z-min z-max phi-max)
   (cylinder radius z-min z-max phi-max))
